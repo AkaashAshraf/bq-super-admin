@@ -1,11 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.bq_admin">
+    package="fasttech.bq.super_admin">
    <application
-        android:label="bq_admin"
-        android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:label="Super Admin"
+         android:icon="@mipmap/ic_launcher">
         <activity
-            android:name=".MainActivity"
+            android:name="fasttech.bq.super_admin.MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
