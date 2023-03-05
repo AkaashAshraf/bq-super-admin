@@ -8,7 +8,6 @@ import 'package:bq_admin/components/common/simple_text_input.dart';
 import 'package:bq_admin/components/common/toasts.dart';
 import 'package:bq_admin/controllers/general_services_controller.dart';
 import 'package:bq_admin/controllers/helper_controller.dart';
-import 'package:bq_admin/controllers/spa_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -59,7 +58,7 @@ class _AddGeneralServiceState extends State<AddGeneralService> {
       appBar: appBar(title: "Add General Service"),
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
-        child: GetX<SpaController>(builder: (controller) {
+        child: GetX<GeneralServicesController>(builder: (controller) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -170,19 +169,17 @@ class _AddGeneralServiceState extends State<AddGeneralService> {
                       if (!checkValidation()) {
                         return;
                       }
-                      var res =
-                          await Get.find<GeneralServicesController>().addSaloon(
+                      var res = await Get.find<GeneralServicesController>()
+                          .addGeneralService(
                         nameEn: nameEn,
                         nameAr: nameAr,
                         image: image1,
                       );
                       if (res != null) {
                         ToastMessages.showSuccess(
-                            "Spa has been added successfully");
+                            "Service has been added successfully");
                         Get.back();
-                        controller.fetchSpa(type: "all");
-                        controller.fetchSpa(type: "active");
-                        controller.fetchSpa(type: "deactive");
+                        controller.fetchGeneralServices();
                       }
                     },
                   ),

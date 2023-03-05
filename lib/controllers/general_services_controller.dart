@@ -13,6 +13,7 @@ class GeneralServicesController extends GetxController {
   RxList<GeneralService> genralServicesList = <GeneralService>[].obs;
   RxInt totalGeneralServices = 0.obs;
   RxBool loading = false.obs;
+  RxInt currentService = 0.obs;
 
   @override
   void onInit() {
@@ -34,7 +35,26 @@ class GeneralServicesController extends GetxController {
     }
   }
 
-  addSaloon({
+  blockUnblockService({required int status, required int serviceID}) async {
+    try {
+      loading(true);
+      currentService(serviceID);
+      final result = await post(blockUnblockGeneralServiceUrl,
+          {"status": status.toString(), "service_id": serviceID.toString()});
+      if (result != null) {
+        fetchGeneralServices();
+
+        return true;
+      } else {
+        return false;
+      }
+    } finally {
+      currentService(0);
+      loading(false);
+    }
+  }
+
+  addGeneralService({
     required String nameEn,
     required String nameAr,
     required XFile? image,
@@ -42,8 +62,8 @@ class GeneralServicesController extends GetxController {
     try {
       loading(true);
 
-      var request =
-          http.MultipartRequest('POST', Uri.parse(baseUrl + addGeneralService));
+      var request = http.MultipartRequest(
+          'POST', Uri.parse(baseUrl + addGeneralServiceUrl));
       request.fields['name_en'] = nameEn;
 
       request.fields['name_ar'] = nameAr;

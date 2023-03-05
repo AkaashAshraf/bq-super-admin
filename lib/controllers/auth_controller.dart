@@ -42,46 +42,47 @@ class AuthController extends GetxController {
   }
 
   getUserInfoFromCache() {
+    final userName = MyApp().storage.read(userNamePath);
+    name(userName);
     final rawData = MyApp().storage.read(userDataPath);
     if (rawData == "" || rawData == null) return;
     final loginResponse = loginFromJson(rawData);
     userInfo.value = loginResponse.user!;
-    name(loginResponse.user?.name ?? "");
   }
 
   login() async {
-    // try {
-    if (contact.value.length < 8) {
-      ToastMessages.showError("valid_number_alert".tr);
-      return;
-    }
-    if (password.value.isEmpty) {
-      ToastMessages.showError("valid_password_alert".tr);
-      return;
-    }
-    loading(true);
-    var response = await post(
-        loginUrl, {"user_name": contact.value, "password": password.value});
-    // inspect(response);
-    if (response.statusCode == 200) {
-      var jsonData = loginFromJson(response.body);
-      MyApp().storage.write(tokenPath, jsonData.token);
-      MyApp().storage.write(userIDPath, jsonData.user?.id.toString());
-      MyApp().storage.write(userNamePath, jsonData.user?.name);
-      MyApp().storage.write(userDataPath, loginToJson(jsonData));
-      ToastMessages.showSuccess("LoggedInSuccessfully".tr);
-      getUserInfoFromCache();
+    try {
+      if (contact.value.length < 8) {
+        ToastMessages.showError("valid_number_alert".tr);
+        return;
+      }
+      if (password.value.isEmpty) {
+        ToastMessages.showError("valid_password_alert".tr);
+        return;
+      }
+      loading(true);
+      var response = await post(
+          loginUrl, {"user_name": contact.value, "password": password.value});
+      // inspect(response);
+      if (response.statusCode == 200) {
+        var jsonData = loginFromJson(response.body);
+        MyApp().storage.write(tokenPath, jsonData.token);
+        MyApp().storage.write(userIDPath, jsonData.user?.id.toString());
+        MyApp().storage.write(userNamePath, jsonData.user?.name);
+        MyApp().storage.write(userDataPath, loginToJson(jsonData));
+        ToastMessages.showSuccess("LoggedInSuccessfully".tr);
+        getUserInfoFromCache();
 
-      Get.offAll(const DashboardView());
-      // Get.toEnd(() => const DashboardView(title: ""));
-    } else {
-      ToastMessages.showError("In valid Password".tr);
+        Get.offAll(const DashboardView());
+        // Get.toEnd(() => const DashboardView(title: ""));
+      } else {
+        ToastMessages.showError("In valid Password".tr);
+      }
+    } catch (e) {
+      print(e.toString());
+      ToastMessages.showError("Invalid password");
+    } finally {
+      loading(false);
     }
-    // } catch (e) {
-    //   print(e.toString());
-    //   ToastMessages.showError(e.toString());
-    // } finally {
-    //   loading(false);
-    // }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:bq_admin/components/common/loading_indicator.dart';
 import 'package:bq_admin/components/common/no_data_widget.dart';
+import 'package:bq_admin/config/text_sizes.dart';
 import 'package:bq_admin/controllers/gym_controller.dart';
 import 'package:bq_admin/models/simple/shop.dart';
 import 'package:bq_admin/views/home/gyms/gym_details_view.dart';
@@ -60,8 +61,10 @@ class _GymListView extends State<GymListView> {
   Widget build(BuildContext context) {
     return SafeArea(child: GetX<GymController>(builder: (controller) {
       return SizedBox(
-        child: getListLength(controller) == 0 && controller.loading.value
-            ? const BQLoaing()
+        height: screenHeight(context),
+        width: screenWidth(context),
+        child: (getListLength(controller) == 0 && controller.loading.value)
+            ? const Center(child: BQLoaing())
             : getListLength(controller) == 0 && !controller.loading.value
                 ? const NoDataWidget(text: "No Gym Available")
                 : ListView.builder(

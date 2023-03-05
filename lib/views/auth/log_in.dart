@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bq_admin/components/common/app_bar.dart';
 import 'package:bq_admin/components/common/buttons.dart';
 import 'package:bq_admin/components/common/labels/auth_top_label.dart';
@@ -6,10 +8,7 @@ import 'package:bq_admin/components/common/logo_image.dart';
 import 'package:bq_admin/components/common/textInputs/password_input.dart';
 import 'package:bq_admin/components/common/textInputs/text_input.dart';
 import 'package:bq_admin/config/colors.dart';
-import 'package:bq_admin/config/storages.dart';
 import 'package:bq_admin/controllers/auth_controller.dart';
-import 'package:bq_admin/main.dart';
-import 'package:bq_admin/views/home/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
@@ -24,8 +23,6 @@ class SignIn extends StatefulWidget {
 class _SignIn extends State<SignIn> {
   @override
   void initState() {
-    final token = MyApp().storage.read(tokenPath) ?? "";
-    if (token != "") Get.offAll(const DashboardView());
     super.initState();
   }
 

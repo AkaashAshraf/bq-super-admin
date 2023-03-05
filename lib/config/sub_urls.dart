@@ -6,7 +6,9 @@ const String changePassword = "";
 
 // general services
 const String generalServicesListUrl = "/super_admin/genral-services/list";
-const String addGeneralService = "/super_admin/genral-services/add";
+const String addGeneralServiceUrl = "/super_admin/genral-services/add";
+const String blockUnblockGeneralServiceUrl =
+    "/super_admin/genral-services/block-unblock";
 
 // ///saloon
 const String saloonListUrl = "/super_admin/saloon/list";

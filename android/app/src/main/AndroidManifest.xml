@@ -1,5 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="fasttech.bq.super_admin">
+
+    <uses-permission android:name="android.permission.INTERNET" />
    <application
         android:label="Super Admin"
          android:icon="@mipmap/ic_launcher">

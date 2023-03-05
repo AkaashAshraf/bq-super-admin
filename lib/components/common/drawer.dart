@@ -59,14 +59,14 @@ class _MenuDrawerState extends State<MenuDrawer> {
             ],
           ),
         ),
-        drawerItem(context,
-            icon: const Icon(
-              Icons.supervised_user_circle_outlined,
-              size: 25,
-              color: textInputIconColor,
-            ), onPress: () {
-          // Get.to(const Profile());
-        }, title: "Profile".tr),
+        // drawerItem(context,
+        //     icon: const Icon(
+        //       Icons.supervised_user_circle_outlined,
+        //       size: 25,
+        //       color: textInputIconColor,
+        //     ), onPress: () {
+        //   // Get.to(const Profile());
+        // }, title: "Profile".tr),
         // drawerItem(context,
         //     icon: const Icon(
         //       Icons.book_outlined,
@@ -75,27 +75,27 @@ class _MenuDrawerState extends State<MenuDrawer> {
         //     ), onPress: () {
         //   // Get.to(const MyAppointmentsList());
         // }, title: "MyAppointments".tr),
-        drawerItem(context,
-            icon: const Icon(
-              Icons.notifications,
-              size: 25,
-              color: textInputIconColor,
-            ), onPress: () {
-          // Get.to(const NotificationsList());
-        }, title: "Notifications".tr),
-        if (false)
-          ListTile(
-            leading: const Icon(
-              Icons.password,
-              size: 25,
-              color: textInputIconColor,
-            ),
-            title: Text('ChangePassword'.tr),
-            onTap: () {
-              // Update the state of the app.
-              // ...
-            },
-          ),
+        // drawerItem(context,
+        //     icon: const Icon(
+        //       Icons.notifications,
+        //       size: 25,
+        //       color: textInputIconColor,
+        //     ), onPress: () {
+        //   // Get.to(const NotificationsList());
+        // }, title: "Notifications".tr),
+        // if (false)
+        // ListTile(
+        //   leading: const Icon(
+        //     Icons.password,
+        //     size: 25,
+        //     color: textInputIconColor,
+        //   ),
+        //   title: Text('ChangePassword'.tr),
+        //   onTap: () {
+        //     // Update the state of the app.
+        //     // ...
+        //   },
+        // ),
         drawerItem(context,
             icon: const Icon(
               Icons.logout,
@@ -106,54 +106,55 @@ class _MenuDrawerState extends State<MenuDrawer> {
               title: "logout_alert".tr,
               buttons: DialogButton(
                   onPressed: (() {
-                    // Get.put(AuthController()).logout();
+                    Get.put(AuthController()).logout();
                   }),
                   child: Text(
                     "Yes".tr,
                     style: const TextStyle(color: Colors.white),
                   ))).show();
         }, title: "Logout".tr),
-        drawerItem(context,
-            icon: const Icon(
-              Icons.delete,
-              size: 25,
-              color: textInputIconColor,
-            ), onPress: () {
-          textAlert(context,
-              title: "delete_alert".tr,
-              buttons: DialogButton(
-                  onPressed: (() {}),
-                  child: Text(
-                    "Yes".tr,
-                    style: const TextStyle(color: Colors.white),
-                  ))).show();
-        }, title: "DeleteAccount".tr),
-        drawerItem(context,
-            icon: const Icon(
-              Icons.language,
-              size: 25,
-              color: textInputIconColor,
-            ), onPress: () {
-          textAlert(context,
-              title: "language_alert".tr,
-              buttons: DialogButton(
-                  onPressed: (() {
-                    MyApp().storage.write(localizationPath,
-                        Get.locale.toString() == "en" ? "ar" : "en");
-                    if (Platform.isAndroid) {
-                      Restart.restartApp();
-                    } else {
-                      Phoenix.rebirth(context);
+        // drawerItem(context,
+        //     icon: const Icon(
+        //       Icons.delete,
+        //       size: 25,
+        //       color: textInputIconColor,
+        //     ), onPress: () {
+        //   textAlert(context,
+        //       title: "delete_alert".tr,
+        //       buttons: DialogButton(
+        //           onPressed: (() {}),
+        //           child: Text(
+        //             "Yes".tr,
+        //             style: const TextStyle(color: Colors.white),
+        //           ))).show();
+        // }, title: "DeleteAccount".tr),
 
-                      Navigator.pop(context);
-                    }
-                    // Phoenix.rebirth(context);
-                  }),
-                  child: Text(
-                    "Yes".tr,
-                    style: const TextStyle(color: Colors.white),
-                  ))).show();
-        }, title: "ChangeLanguage".tr),
+        // drawerItem(context,
+        //     icon: const Icon(
+        //       Icons.language,
+        //       size: 25,
+        //       color: textInputIconColor,
+        //     ), onPress: () {
+        //   textAlert(context,
+        //       title: "language_alert".tr,
+        //       buttons: DialogButton(
+        //           onPressed: (() {
+        //             MyApp().storage.write(localizationPath,
+        //                 Get.locale.toString() == "en" ? "ar" : "en");
+        //             if (Platform.isAndroid) {
+        //               Restart.restartApp();
+        //             } else {
+        //               Phoenix.rebirth(context);
+
+        //               Navigator.pop(context);
+        //             }
+        //             // Phoenix.rebirth(context);
+        //           }),
+        //           child: Text(
+        //             "Yes".tr,
+        //             style: const TextStyle(color: Colors.white),
+        //           ))).show();
+        // }, title: "ChangeLanguage".tr),
       ],
     ));
   }

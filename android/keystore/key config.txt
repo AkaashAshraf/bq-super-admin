@@ -1,0 +1,4 @@
+
+key alias : bq
+key password : 1994-fasttech-july-16
+keystore password : 1994-fasttech-july-16 

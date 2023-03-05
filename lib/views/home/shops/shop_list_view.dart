@@ -63,7 +63,7 @@ class _ShopListView extends State<ShopListView> {
     return SafeArea(child: GetX<ShopsController>(builder: (controller) {
       return SizedBox(
         child: getListLength(controller) == 0 && controller.loading.value
-            ? const BQLoaing()
+            ? const Center(child: BQLoaing())
             : getListLength(controller) == 0 && !controller.loading.value
                 ? const NoDataWidget(text: "No Shop Available")
                 : ListView.builder(

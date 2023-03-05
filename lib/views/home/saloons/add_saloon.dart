@@ -5,6 +5,7 @@ import 'package:bq_admin/components/common/image_picker.dart';
 import 'package:bq_admin/components/common/loading_indicator.dart';
 import 'package:bq_admin/components/common/simple_button.dart';
 import 'package:bq_admin/components/common/simple_text_input.dart';
+import 'package:bq_admin/components/common/single_selection_drop_down.dart';
 // import 'package:bq_admin/components/common/single_selection_drop_down.dart';
 import 'package:bq_admin/components/common/toasts.dart';
 import 'package:bq_admin/controllers/constants_controller.dart';
@@ -29,7 +30,7 @@ class _AddSaloonState extends State<AddSaloon> {
   int productId = 0;
   String imageSelectionType = "gallery".tr;
   XFile? image1;
-
+  int city = 0;
   String nameEn = "";
   String nameAr = "";
   String longitude = "";
@@ -46,7 +47,9 @@ class _AddSaloonState extends State<AddSaloon> {
         latitude.isEmpty ||
         longitude.isEmpty ||
         contact.isEmpty ||
+        contact.length < 8 ||
         descriptionEn.isEmpty ||
+        city == 0 ||
         descriptionAr.isEmpty) {
       ToastMessages.showError("Some data is missing");
 
@@ -125,6 +128,7 @@ class _AddSaloonState extends State<AddSaloon> {
                     width: width * 0.49,
                     child: SimpleInputField(
                       title: "Latitude",
+                      keyBoardType: TextInputType.number,
                       hint: "writeHere".tr,
                       initialValue: latitude,
                       validator:
@@ -140,6 +144,7 @@ class _AddSaloonState extends State<AddSaloon> {
                     child: SimpleInputField(
                       title: "Longitude",
                       hint: "writeHere".tr,
+                      keyBoardType: TextInputType.number,
                       initialValue: longitude,
                       validator:
                           isValidate && longitude.isEmpty ? "required".tr : "",
@@ -158,26 +163,24 @@ class _AddSaloonState extends State<AddSaloon> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // SizedBox(
-                  //   width: width * 0.95,
-                  //   child: SingleSelectionSimpleDropDown(
-                  //     title: "category".tr,
-                  //     selected: category,
-                  //     items: constantsController.cities
-                  //         .map((element) => DropDown(
-                  //             title: element.nameEn ?? "",
-                  //             value: element.id ?? 0))
-                  //         .toList(),
-                  //     validator:
-                  //         isValidate && category == 0 ? "required".tr : "",
-                  //     onChange: (DropDown val) {
-                  //       setState(() {
-                  //         category = val.value;
-                  //         subCategory = 0;
-                  //       });
-                  //     },
-                  //   ),
-                  // ),
+                  SizedBox(
+                    width: width * 0.95,
+                    child: SingleSelectionSimpleDropDown(
+                      title: "City".tr,
+                      selected: city,
+                      items: constantsController.cities
+                          .map((element) => DropDown(
+                              title: element.nameEn ?? "",
+                              value: element.id ?? 0))
+                          .toList(),
+                      validator: isValidate && city == 0 ? "required".tr : "",
+                      onChange: (DropDown val) {
+                        setState(() {
+                          city = val.value;
+                        });
+                      },
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(
@@ -216,6 +219,7 @@ class _AddSaloonState extends State<AddSaloon> {
               SimpleInputField(
                 title: "Contact",
                 hint: "writeHere".tr,
+                keyBoardType: TextInputType.number,
                 initialValue: contact,
                 validator: isValidate && contact.isEmpty
                     ? "required".tr
@@ -295,7 +299,7 @@ class _AddSaloonState extends State<AddSaloon> {
                         contact: contact,
                         latitude: latitude,
                         longitude: longitude,
-                        city: 1,
+                        city: city,
                         descriptionEn: descriptionEn,
                         descriptionAr: descriptionAr,
                         image: image1,

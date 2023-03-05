@@ -62,7 +62,7 @@ class _SpaListView extends State<SpaListView> {
     return SafeArea(child: GetX<SpaController>(builder: (controller) {
       return SizedBox(
         child: getListLength(controller) == 0 && controller.loading.value
-            ? const BQLoaing()
+            ? const Center(child: BQLoaing())
             : getListLength(controller) == 0 && !controller.loading.value
                 ? const NoDataWidget(text: "No Spa Available")
                 : ListView.builder(

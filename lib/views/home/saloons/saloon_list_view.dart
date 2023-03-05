@@ -62,7 +62,7 @@ class _SaloonListView extends State<SaloonListView> {
     return SafeArea(child: GetX<SaloonsController>(builder: (controller) {
       return SizedBox(
         child: getListLength(controller) == 0 && controller.loading.value
-            ? const BQLoaing()
+            ? const Center(child: BQLoaing())
             : getListLength(controller) == 0 && !controller.loading.value
                 ? const NoDataWidget(text: "No Saloon Available")
                 : ListView.builder(

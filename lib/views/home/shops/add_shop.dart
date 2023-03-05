@@ -5,6 +5,7 @@ import 'package:bq_admin/components/common/image_picker.dart';
 import 'package:bq_admin/components/common/loading_indicator.dart';
 import 'package:bq_admin/components/common/simple_button.dart';
 import 'package:bq_admin/components/common/simple_text_input.dart';
+import 'package:bq_admin/components/common/single_selection_drop_down.dart';
 import 'package:bq_admin/components/common/toasts.dart';
 import 'package:bq_admin/controllers/constants_controller.dart';
 import 'package:bq_admin/controllers/helper_controller.dart';
@@ -33,7 +34,7 @@ class _AddShopState extends State<AddShop> {
   String longitude = "";
   String latitude = "";
   String contact = "";
-
+  int city = 0;
   String descriptionEn = "";
   String descriptionAr = "";
 
@@ -43,7 +44,8 @@ class _AddShopState extends State<AddShop> {
         nameAr.isEmpty ||
         latitude.isEmpty ||
         longitude.isEmpty ||
-        contact.isEmpty ||
+        city == 0 ||
+        contact.length < 8 ||
         descriptionEn.isEmpty ||
         descriptionAr.isEmpty) {
       ToastMessages.showError("Some data is missing");
@@ -154,26 +156,24 @@ class _AddShopState extends State<AddShop> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // SizedBox(
-                  //   width: width * 0.95,
-                  //   child: SingleSelectionSimpleDropDown(
-                  //     title: "category".tr,
-                  //     selected: category,
-                  //     items: constantsController.cities
-                  //         .map((element) => DropDown(
-                  //             title: element.nameEn ?? "",
-                  //             value: element.id ?? 0))
-                  //         .toList(),
-                  //     validator:
-                  //         isValidate && category == 0 ? "required".tr : "",
-                  //     onChange: (DropDown val) {
-                  //       setState(() {
-                  //         category = val.value;
-                  //         subCategory = 0;
-                  //       });
-                  //     },
-                  //   ),
-                  // ),
+                  SizedBox(
+                    width: width * 0.95,
+                    child: SingleSelectionSimpleDropDown(
+                      title:"City",
+                      selected: city,
+                      items: constantsController.cities
+                          .map((element) => DropDown(
+                              title: element.nameEn ?? "",
+                              value: element.id ?? 0))
+                          .toList(),
+                      validator: isValidate && city == 0 ? "required".tr : "",
+                      onChange: (DropDown val) {
+                        setState(() {
+                          city = val.value;
+                        });
+                      },
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(
@@ -291,7 +291,7 @@ class _AddShopState extends State<AddShop> {
                         contact: contact,
                         latitude: latitude,
                         longitude: longitude,
-                        city: 1,
+                        city: city,
                         image: image1,
                       );
                       if (res != null) {
