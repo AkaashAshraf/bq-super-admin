@@ -6,6 +6,7 @@ import 'package:bq_admin/main.dart';
 import 'package:bq_admin/models/response/login.dart';
 import 'package:bq_admin/models/user.dart';
 import 'package:bq_admin/views/auth/log_in.dart';
+import 'package:bq_admin/views/home/dashboard.dart';
 import 'package:get/get.dart';
 
 class AuthController extends GetxController {
@@ -13,8 +14,6 @@ class AuthController extends GetxController {
   RxBool checkValidation = false.obs;
   RxString contact = "".obs;
   RxString password = "".obs;
-  RxString confirmPassword = "".obs;
-
   RxString name = "".obs;
 
   Rx<User> userInfo = User().obs;
@@ -46,10 +45,12 @@ class AuthController extends GetxController {
     final rawData = MyApp().storage.read(userDataPath);
     if (rawData == "" || rawData == null) return;
     final loginResponse = loginFromJson(rawData);
-    userInfo.value = loginResponse.data!.user!;
+    userInfo.value = loginResponse.user!;
+    name(loginResponse.user?.name ?? "");
   }
 
   login() async {
+    // try {
     if (contact.value.length < 8) {
       ToastMessages.showError("valid_number_alert".tr);
       return;
@@ -59,72 +60,28 @@ class AuthController extends GetxController {
       return;
     }
     loading(true);
-    try {
-      var response = await post(
-          loginUrl, {"user_name": contact.value, "password": password.value});
-      // inspect(response);
-      if (response.statusCode == 200) {
-        var jsonData = loginFromJson(response.body);
-        MyApp().storage.write(tokenPath, jsonData.data!.token);
-        MyApp().storage.write(userIDPath, jsonData.data!.user!.id.toString());
-        MyApp().storage.write(userNamePath, jsonData.data!.user!.name);
-        MyApp().storage.write(userDataPath, loginToJson(jsonData));
-        ToastMessages.showSuccess("LoggedInSuccessfully".tr);
-        // Get.to(const DashboardView(title: ""));
-        getUserInfoFromCache();
+    var response = await post(
+        loginUrl, {"user_name": contact.value, "password": password.value});
+    // inspect(response);
+    if (response.statusCode == 200) {
+      var jsonData = loginFromJson(response.body);
+      MyApp().storage.write(tokenPath, jsonData.token);
+      MyApp().storage.write(userIDPath, jsonData.user?.id.toString());
+      MyApp().storage.write(userNamePath, jsonData.user?.name);
+      MyApp().storage.write(userDataPath, loginToJson(jsonData));
+      ToastMessages.showSuccess("LoggedInSuccessfully".tr);
+      getUserInfoFromCache();
 
-        // Get.offAll(const DashboardView(title: ""));
-        // Get.toEnd(() => const DashboardView(title: ""));
-      } else {
-        ToastMessages.showSuccess("LoggedInSuccessfully".tr);
-      }
-    } catch (e) {
-      ToastMessages.showError(e.toString());
-    } finally {
-      loading(false);
+      Get.offAll(const DashboardView());
+      // Get.toEnd(() => const DashboardView(title: ""));
+    } else {
+      ToastMessages.showError("In valid Password".tr);
     }
-  }
-
-  signUp() async {
-    if (contact.value.length < 8) {
-      ToastMessages.showError("valid_number_alert".tr);
-      return;
-    }
-
-    if (name.value.isEmpty) {
-      ToastMessages.showError("valid_name_alert".tr);
-      return;
-    }
-    if (password.value != confirmPassword.value) {
-      ToastMessages.showError("PasswordMismatch".tr);
-      return;
-    }
-    loading(true);
-    try {
-      var response = await post(signUpUrl, {
-        "user_name": contact.value,
-        "password": password.value,
-        "name": name.value
-      });
-      if (response != null) {
-        var jsonData = loginFromJson(response.body);
-        MyApp().storage.write(tokenPath, jsonData.data!.token);
-        MyApp().storage.write(userIDPath, jsonData.data!.user!.id.toString());
-        MyApp().storage.write(userNamePath, jsonData.data!.user!.name);
-        MyApp().storage.write(userDataPath, loginToJson(jsonData));
-        ToastMessages.showSuccess("LoggedInSuccessfully".tr);
-        // Get.to(const DashboardView(title: ""));
-        getUserInfoFromCache();
-        // Get.offAll(const DashboardView(title: ""));
-
-        // Get.toEnd(() => const DashboardView(title: ""));
-      } else {
-        ToastMessages.showError("ThisNumberAlreadyExist".tr);
-      }
-    } catch (e) {
-      ToastMessages.showError(e.toString());
-    } finally {
-      loading(false);
-    }
+    // } catch (e) {
+    //   print(e.toString());
+    //   ToastMessages.showError(e.toString());
+    // } finally {
+    //   loading(false);
+    // }
   }
 }

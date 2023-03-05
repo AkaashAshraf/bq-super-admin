@@ -4,6 +4,7 @@ import 'package:bq_admin/components/common/text_alert.dart';
 import 'package:bq_admin/config/colors.dart';
 import 'package:bq_admin/config/storages.dart';
 import 'package:bq_admin/config/text_sizes.dart';
+import 'package:bq_admin/controllers/auth_controller.dart';
 import 'package:bq_admin/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
@@ -11,11 +12,17 @@ import 'package:get/get.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:restart_app/restart_app.dart';
 
-class MenuDrawer extends StatelessWidget {
+class MenuDrawer extends StatefulWidget {
   const MenuDrawer({
     Key? key,
   }) : super(key: key);
 
+  @override
+  State<MenuDrawer> createState() => _MenuDrawerState();
+}
+
+class _MenuDrawerState extends State<MenuDrawer> {
+  AuthController authController = Get.put(AuthController());
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -42,7 +49,7 @@ class MenuDrawer extends StatelessWidget {
               SizedBox(
                   width: width * 0.8,
                   child: Text(
-                    "Sana Beauty Saloon",
+                    authController.name.value,
                     style: TextStyle(
                         color: primaryColor,
                         fontFamily: "primary",

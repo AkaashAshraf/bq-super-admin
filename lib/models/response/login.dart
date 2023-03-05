@@ -12,44 +12,28 @@ String loginToJson(Login data) => json.encode(data.toJson());
 
 class Login {
   Login({
-    this.status,
-    this.message,
-    this.data,
+    this.status = 0,
+    this.message = "",
+    this.user,
+    this.token = "",
   });
 
-  String? status;
-  String? message;
-  Data? data;
+  int status;
+  String message;
+  User? user;
+  String token;
 
   factory Login.fromJson(Map<String, dynamic> json) => Login(
-        status: json["status"] ?? "",
+        status: json["status"] ?? 0,
         message: json["message"] ?? "",
-        data: json["data"] == null ? null : Data.fromJson(json["data"]),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "status": status ?? "",
-        "message": message ?? "",
-        "data": data == null ? null : data!.toJson(),
-      };
-}
-
-class Data {
-  Data({
-    this.user,
-    this.token,
-  });
-
-  User? user;
-  String? token;
-
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
-        user: json["user"] == null ? null : User.fromJson(json["user"]),
+        user: json["data"] == null ? null : User.fromJson(json["data"]),
         token: json["token"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {
-        "user": user == null ? null : user!.toJson(),
-        "token": token ?? "",
+        "status": status,
+        "message": message,
+        "data": user?.toJson(),
+        "token": token,
       };
 }

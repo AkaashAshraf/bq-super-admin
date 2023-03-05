@@ -4,6 +4,7 @@ import 'package:bq_admin/views/auth/log_in.dart';
 import 'package:bq_admin/views/home/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/route_manager.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -14,17 +15,18 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  final storage = GetStorage();
-
   MyApp({super.key});
+  final storage = GetStorage();
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final token = storage.read(tokenPath) ?? "cbndcmnb";
+
     final local = storage.read(localizationPath) ?? "en";
-    final token = storage.read(tokenPath) ?? "";
 
     return GetMaterialApp(
+        builder: FToastBuilder(),
         translations: LanguageTranslations(), // your translations
         locale: Locale(local), // translations will be displayed in that locale
         fallbackLocale: Locale(local),
@@ -33,7 +35,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         home: token == "" || token == null
-            ? const DashboardView()
+            ? const SignIn()
             : const DashboardView());
   }
 }

@@ -11,7 +11,7 @@ class LanguageTranslations extends Translations {
           "EnterMobileNo": "Enter Mobile No",
           "ForgetPassword": "Forget Password",
 
-          'Beauty Queens': 'Beauty Queens Admin',
+          'Beauty Queens': 'Beauty Queens Super Admin',
           "EnterPassword": "Enter Password",
           "Login": "Login",
           "Submit": "Submit",

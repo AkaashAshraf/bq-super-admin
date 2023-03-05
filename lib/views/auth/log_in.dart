@@ -6,7 +6,10 @@ import 'package:bq_admin/components/common/logo_image.dart';
 import 'package:bq_admin/components/common/textInputs/password_input.dart';
 import 'package:bq_admin/components/common/textInputs/text_input.dart';
 import 'package:bq_admin/config/colors.dart';
+import 'package:bq_admin/config/storages.dart';
 import 'package:bq_admin/controllers/auth_controller.dart';
+import 'package:bq_admin/main.dart';
+import 'package:bq_admin/views/home/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
@@ -19,6 +22,13 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignIn extends State<SignIn> {
+  @override
+  void initState() {
+    final token = MyApp().storage.read(tokenPath) ?? "";
+    if (token != "") Get.offAll(const DashboardView());
+    super.initState();
+  }
+
   AuthController authController = Get.put(AuthController());
   @override
   Widget build(BuildContext context) {
@@ -102,32 +112,35 @@ class _SignIn extends State<SignIn> {
                                         controller.password.value = val;
                                       },
                                     ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        // Get.to(const ForgetPassword(title: ""));
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: SizedBox(
-                                            width: width,
-                                            child: Text(
-                                              "ForgetPassword".tr,
-                                              textAlign:
-                                                  Get.locale.toString() == "en"
-                                                      ? TextAlign.right
-                                                      : TextAlign.left,
-                                              style: const TextStyle(
-                                                  color: primaryColor,
-                                                  fontWeight: FontWeight.w500,
-                                                  fontStyle: FontStyle.italic),
-                                            )),
+                                    if (false)
+                                      GestureDetector(
+                                        onTap: () {
+                                          // Get.to(const ForgetPassword(title: ""));
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: SizedBox(
+                                              width: width,
+                                              child: Text(
+                                                "ForgetPassword".tr,
+                                                textAlign:
+                                                    Get.locale.toString() ==
+                                                            "en"
+                                                        ? TextAlign.right
+                                                        : TextAlign.left,
+                                                style: const TextStyle(
+                                                    color: primaryColor,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontStyle:
+                                                        FontStyle.italic),
+                                              )),
+                                        ),
                                       ),
-                                    ),
                                     const SizedBox(
                                       height: 50,
                                     ),
                                     controller.loading.value
-                                        ? const LoadingIndicatore()
+                                        ? const BQLoaing()
                                         : iconButton(
                                             onClick: () {
                                               controller.login();
