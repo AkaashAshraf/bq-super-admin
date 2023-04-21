@@ -1,7 +1,8 @@
 import 'package:bq_admin/components/common/app_bar.dart';
 import 'package:bq_admin/config/colors.dart';
 import 'package:bq_admin/config/text_sizes.dart';
-import 'package:bq_admin/views/home/gyms/add_gym.dart';
+import 'package:bq_admin/models/simple/shop.dart';
+import 'package:bq_admin/views/home/gyms/add_update_gym.dart';
 import 'package:bq_admin/views/home/gyms/gym_list_view.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,9 @@ class _GymTabs extends State<GymTabs> {
             title: "Gyms",
             rightIcon: GestureDetector(
               onTap: () {
-                Get.to(const AddGym());
+                Get.to(AddUpdateGym(
+                  gym: Shop(),
+                ));
               },
               child: const IconButton(
                 icon: Icon(

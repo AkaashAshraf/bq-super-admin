@@ -1,7 +1,7 @@
 import 'package:bq_admin/components/common/app_bar.dart';
 import 'package:bq_admin/config/colors.dart';
 import 'package:bq_admin/config/text_sizes.dart';
-import 'package:bq_admin/views/home/saloons/add_saloon.dart';
+import 'package:bq_admin/views/home/saloons/add_update_saloon.dart';
 import 'package:bq_admin/views/home/saloons/saloon_list_view.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +22,7 @@ class _SaloonsTabs extends State<SaloonsTabs> {
             title: "Beauty Saloons",
             rightIcon: GestureDetector(
               onTap: () {
-                Get.to(const AddSaloon());
+                Get.to(const AddUpdateSaloon());
               },
               child: const IconButton(
                 icon: Icon(

@@ -91,6 +91,7 @@ class _SignIn extends State<SignIn> {
                                         label: "EnterMobileNo".tr,
                                         initialValue:
                                             controller.contact.toString(),
+                                        keyboardType: TextInputType.number,
                                         preIcon: const Icon(
                                           Icons.numbers,
                                           size: 20,

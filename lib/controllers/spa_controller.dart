@@ -86,8 +86,9 @@ class SpaController extends GetxController {
     }
   }
 
-  addSpa({
+  addUpdateSpa({
     required String nameEn,
+    required int id,
     required String nameAr,
     required String latitude,
     required String longitude,
@@ -101,9 +102,10 @@ class SpaController extends GetxController {
       loading(true);
 
       var request =
-          http.MultipartRequest('POST', Uri.parse(baseUrl + addSaloonUrl));
+          http.MultipartRequest('POST', Uri.parse(baseUrl + (id > 0 ? updateSaloonUrl : addSaloonUrl)));
       request.fields['name_en'] = nameEn;
       request.fields['type'] = "spa";
+      request.fields['id'] = id.toString();
 
       request.fields['name_ar'] = nameAr;
       request.fields['contact'] = contact;
@@ -120,7 +122,9 @@ class SpaController extends GetxController {
         request.files.add(multipartFile);
       }
       var res = await multirequestPost(request);
-      return res;
+      var resData = await res.stream.toBytes();
+      var fRes = String.fromCharCodes(resData);
+      return fRes;
     } catch (err) {
       print(err.toString());
     } finally {

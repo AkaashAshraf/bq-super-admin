@@ -2,7 +2,9 @@ import 'dart:developer';
 
 import 'package:bq_admin/config/constants.dart';
 import 'package:bq_admin/config/storages.dart';
+import 'package:bq_admin/controllers/auth_controller.dart';
 import 'package:bq_admin/main.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 Future<dynamic> post(String url, dynamic body) async {
@@ -17,15 +19,16 @@ Future<dynamic> post(String url, dynamic body) async {
       "Accept": "application/json",
       // "Authorization": "Bearer $token"
     });
-    inspect({...body, "user_id": userID.toString(), "token": token});
+    inspect(response);
     if (response.statusCode == 200) {
       return response;
     } else if (response.statusCode == 401) {
+      Get.find<AuthController>().logout();
     } else {
       return null;
     }
   } catch (e) {
-    return e.toString();
+    return null;
   }
 }
 

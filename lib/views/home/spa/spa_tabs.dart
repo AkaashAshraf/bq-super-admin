@@ -1,7 +1,8 @@
 import 'package:bq_admin/components/common/app_bar.dart';
 import 'package:bq_admin/config/colors.dart';
 import 'package:bq_admin/config/text_sizes.dart';
-import 'package:bq_admin/views/home/spa/add_spa.dart';
+import 'package:bq_admin/models/simple/saloon.dart';
+import 'package:bq_admin/views/home/spa/add_update_spa.dart';
 import 'package:bq_admin/views/home/spa/spa_list_view.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,9 @@ class _SpaTabs extends State<SpaTabs> {
             title: "SPA",
             rightIcon: GestureDetector(
               onTap: () {
-                Get.to(const AddSpa());
+                Get.to(AddUpdateSpa(
+                  item: Saloon(),
+                ));
               },
               child: const IconButton(
                 icon: Icon(

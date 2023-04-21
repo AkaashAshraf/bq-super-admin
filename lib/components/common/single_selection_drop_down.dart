@@ -67,10 +67,10 @@ class _SingleSelectionSimpleDropDownState
                           selectedItem?.title ?? "",
                           maxLines: 1,
                         )),
-                    dropdownDecoratorProps: DropDownDecoratorProps(
-                      dropdownSearchDecoration: InputDecoration(
-                          labelText: widget.title, border: InputBorder.none),
-                    ),
+                    // dropdownDecoratorProps: DropDownDecoratorProps(
+                    //   dropdownSearchDecoration: InputDecoration(
+                    //       labelText: widget.title, border: InputBorder.none),
+                    // ),
                   ),
                   const SizedBox(
                     height: 10,

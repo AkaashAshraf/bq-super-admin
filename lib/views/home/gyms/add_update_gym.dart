@@ -8,53 +8,55 @@ import 'package:bq_admin/components/common/simple_text_input.dart';
 import 'package:bq_admin/components/common/single_selection_drop_down.dart';
 import 'package:bq_admin/components/common/toasts.dart';
 import 'package:bq_admin/controllers/constants_controller.dart';
+import 'package:bq_admin/controllers/gym_controller.dart';
 import 'package:bq_admin/controllers/helper_controller.dart';
-import 'package:bq_admin/controllers/spa_controller.dart';
+import 'package:bq_admin/models/simple/shop.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AddSpa extends StatefulWidget {
-  const AddSpa({super.key});
-
+class AddUpdateGym extends StatefulWidget {
+  const AddUpdateGym({super.key, required this.gym});
+  final Shop gym;
   @override
-  State<AddSpa> createState() => _AddSpaState();
+  State<AddUpdateGym> createState() => _AddUpdateGymState();
 }
 
-class _AddSpaState extends State<AddSpa> {
+class _AddUpdateGymState extends State<AddUpdateGym> {
   HelperController helperController = Get.put(HelperController());
   ConstantsController constantsController = Get.put(ConstantsController());
 
   var isValidate = false;
-  int productId = 0;
   String imageSelectionType = "gallery".tr;
   XFile? image1;
-  int city = 0;
+  int id = 0;
   String nameEn = "";
   String nameAr = "";
   String longitude = "";
   String latitude = "";
   String contact = "";
-
+  int city = 0;
   String descriptionEn = "";
   String descriptionAr = "";
 
   String notifyingStock = "";
   bool checkValidation() {
     if (nameEn.isEmpty ||
-        city == 0 ||
-        nameAr.isEmpty ||
-        latitude.isEmpty ||
-        longitude.isEmpty ||
-        contact.length < 8 ||
-        descriptionEn.isEmpty ||
-        descriptionAr.isEmpty) {
+            nameAr.isEmpty ||
+            latitude.isEmpty ||
+            city == 0 ||
+            longitude.isEmpty ||
+            contact.length < 8
+        // ||
+        // descriptionEn.isEmpty ||
+        // descriptionAr.isEmpty
+        ) {
       ToastMessages.showError("Some data is missing");
 
       return false;
     }
-    if (productId == 0 && image1 == null) {
-      ToastMessages.showError("Some data is missing");
+    if (id == 0 && image1 == null) {
+      ToastMessages.showError("image is missing");
 
       return false;
     }
@@ -63,6 +65,19 @@ class _AddSpaState extends State<AddSpa> {
 
   @override
   void initState() {
+    if (widget.gym.id != 0) {
+      setState(() {
+        id = widget.gym.id ?? 0;
+        nameAr = widget.gym.nameAr ?? "";
+        nameEn = widget.gym.nameEn ?? "";
+        descriptionAr = widget.gym.description ?? "";
+        descriptionEn = widget.gym.description ?? "";
+        contact = widget.gym.contact ?? "";
+        city = widget.gym.city?.id ?? 0;
+        latitude = widget.gym.latitude ?? "";
+        longitude = widget.gym.longitude ?? "";
+      });
+    }
     super.initState();
   }
 
@@ -72,10 +87,10 @@ class _AddSpaState extends State<AddSpa> {
     final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: appBar(title: "Add Spa"),
+      appBar: appBar(title: id > 0 ? "Update Gym" : "Add Gym"),
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
-        child: GetX<SpaController>(builder: (controller) {
+        child: GetX<GymController>(builder: (controller) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -125,6 +140,7 @@ class _AddSpaState extends State<AddSpa> {
                   SizedBox(
                     width: width * 0.49,
                     child: SimpleInputField(
+                      keyBoardType: TextInputType.number,
                       title: "Latitude",
                       hint: "writeHere".tr,
                       initialValue: latitude,
@@ -142,6 +158,7 @@ class _AddSpaState extends State<AddSpa> {
                       title: "Longitude",
                       hint: "writeHere".tr,
                       initialValue: longitude,
+                      keyBoardType: TextInputType.number,
                       validator:
                           isValidate && longitude.isEmpty ? "required".tr : "",
                       onTextChange: (val) {
@@ -179,41 +196,42 @@ class _AddSpaState extends State<AddSpa> {
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              SimpleInputField(
-                title: "description(EN)".tr,
-                hint: "writeHere".tr,
-                initialValue: descriptionEn,
-                validator:
-                    isValidate && descriptionEn.isEmpty ? "required".tr : "",
-                onTextChange: (val) {
-                  setState(() {
-                    descriptionEn = val;
-                  });
-                },
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              SimpleInputField(
-                title: "description(AR)".tr,
-                hint: "writeHere".tr,
-                initialValue: descriptionAr,
-                validator:
-                    isValidate && descriptionAr.isEmpty ? "required".tr : "",
-                onTextChange: (val) {
-                  setState(() {
-                    descriptionAr = val;
-                  });
-                },
-              ),
+              // const SizedBox(
+              //   height: 10,
+              // ),
+              // SimpleInputField(
+              //   title: "description(EN)".tr,
+              //   hint: "writeHere".tr,
+              //   initialValue: descriptionEn,
+              //   validator:
+              //       isValidate && descriptionEn.isEmpty ? "required".tr : "",
+              //   onTextChange: (val) {
+              //     setState(() {
+              //       descriptionEn = val;
+              //     });
+              //   },
+              // ),
+              // const SizedBox(
+              //   height: 10,
+              // ),
+              // SimpleInputField(
+              //   title: "description(AR)".tr,
+              //   hint: "writeHere".tr,
+              //   initialValue: descriptionAr,
+              //   validator:
+              //       isValidate && descriptionAr.isEmpty ? "required".tr : "",
+              //   onTextChange: (val) {
+              //     setState(() {
+              //       descriptionAr = val;
+              //     });
+              //   },
+              // ),
               const SizedBox(
                 height: 10,
               ),
               SimpleInputField(
                 title: "Contact",
+                keyBoardType: TextInputType.number,
                 hint: "writeHere".tr,
                 initialValue: contact,
                 validator: isValidate && contact.isEmpty
@@ -233,9 +251,8 @@ class _AddSpaState extends State<AddSpa> {
               customImagePicker(
                 hint: '',
                 width: width,
-                validator: isValidate && image1 == null && productId == 0
-                    ? "imageIsRequired".tr
-                    : "",
+                validator:
+                    isValidate && image1 == null ? "imageIsRequired".tr : "",
                 onTap: () async {
                   // AlertText(context, 'txt').show();
                   var tempImage = (await ImagePicker().pickImage(
@@ -273,7 +290,7 @@ class _AddSpaState extends State<AddSpa> {
                   width: width * 0.9,
                   height: height * 0.06,
                   child: SimpleButton(
-                    title: "Create",
+                    title: id > 0 ? "Update" : "Create",
                     onPress: () async {
                       setState(() {
                         isValidate = true;
@@ -288,24 +305,27 @@ class _AddSpaState extends State<AddSpa> {
                       if (!checkValidation()) {
                         return;
                       }
-                      var res = await Get.find<SpaController>().addSpa(
+                      var res = await Get.find<GymController>().addUpdateGym(
                         nameEn: nameEn,
+                        id: id,
                         nameAr: nameAr,
                         contact: contact,
                         latitude: latitude,
                         longitude: longitude,
                         city: city,
-                        descriptionEn: descriptionEn,
-                        descriptionAr: descriptionAr,
                         image: image1,
                       );
                       if (res != null) {
-                        ToastMessages.showSuccess(
-                            "Spa has been added successfully");
+                        ToastMessages.showSuccess(id > 0
+                            ? "Shop has been updated successfully"
+                            : "Shop has been added successfully");
                         Get.back();
-                        controller.fetchSpa(type: "all");
-                        controller.fetchSpa(type: "active");
-                        controller.fetchSpa(type: "deactive");
+                        if (id > 0) {
+                          Get.back();
+                        }
+                        controller.fetchGyms(type: "all");
+                        controller.fetchGyms(type: "active");
+                        controller.fetchGyms(type: "deactive");
                       }
                     },
                   ),

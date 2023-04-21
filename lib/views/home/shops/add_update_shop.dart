@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:bq_admin/components/common/app_bar.dart';
@@ -8,20 +9,21 @@ import 'package:bq_admin/components/common/simple_text_input.dart';
 import 'package:bq_admin/components/common/single_selection_drop_down.dart';
 import 'package:bq_admin/components/common/toasts.dart';
 import 'package:bq_admin/controllers/constants_controller.dart';
-import 'package:bq_admin/controllers/gym_controller.dart';
 import 'package:bq_admin/controllers/helper_controller.dart';
+import 'package:bq_admin/controllers/shops_controller.dart';
+import 'package:bq_admin/models/simple/shop.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AddGym extends StatefulWidget {
-  const AddGym({super.key});
-
+class AddUpdateShop extends StatefulWidget {
+  const AddUpdateShop({super.key, required this.shop});
+  final Shop shop;
   @override
-  State<AddGym> createState() => _AddGymState();
+  State<AddUpdateShop> createState() => _AddUpdateShopState();
 }
 
-class _AddGymState extends State<AddGym> {
+class _AddUpdateShopState extends State<AddUpdateShop> {
   HelperController helperController = Get.put(HelperController());
   ConstantsController constantsController = Get.put(ConstantsController());
 
@@ -35,29 +37,50 @@ class _AddGymState extends State<AddGym> {
   String latitude = "";
   String contact = "";
   int city = 0;
+  int id = 0;
+
   String descriptionEn = "";
   String descriptionAr = "";
 
   String notifyingStock = "";
   bool checkValidation() {
     if (nameEn.isEmpty ||
-        nameAr.isEmpty ||
-        latitude.isEmpty ||
-        city == 0 ||
-        longitude.isEmpty ||
-        contact.length < 8 ||
-        descriptionEn.isEmpty ||
-        descriptionAr.isEmpty) {
+            nameAr.isEmpty ||
+            latitude.isEmpty ||
+            longitude.isEmpty ||
+            city == 0 ||
+            contact.length < 8
+        // ||
+        // descriptionEn.isEmpty ||
+        // descriptionAr.isEmpty
+        ) {
       ToastMessages.showError("Some data is missing");
 
       return false;
     }
+    if (id == 0 && image1 == null) {
+      ToastMessages.showError("image is missing");
 
+      return false;
+    }
     return true;
   }
 
   @override
   void initState() {
+    if (widget.shop.id != 0) {
+      setState(() {
+        id = widget.shop.id ?? 0;
+        nameAr = widget.shop.nameAr ?? "";
+        nameEn = widget.shop.nameEn ?? "";
+        descriptionAr = widget.shop.description ?? "";
+        descriptionEn = widget.shop.description ?? "";
+        contact = widget.shop.contact ?? "";
+        city = widget.shop.city?.id ?? 0;
+        latitude = widget.shop.latitude ?? "";
+        longitude = widget.shop.longitude ?? "";
+      });
+    }
     super.initState();
   }
 
@@ -67,10 +90,10 @@ class _AddGymState extends State<AddGym> {
     final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: appBar(title: "Add Gym"),
+      appBar: appBar(title: id > 0 ? "Update Shop" : "Add Shop"),
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
-        child: GetX<GymController>(builder: (controller) {
+        child: GetX<ShopsController>(builder: (controller) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -176,36 +199,36 @@ class _AddGymState extends State<AddGym> {
                   ),
                 ],
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              SimpleInputField(
-                title: "description(EN)".tr,
-                hint: "writeHere".tr,
-                initialValue: descriptionEn,
-                validator:
-                    isValidate && descriptionEn.isEmpty ? "required".tr : "",
-                onTextChange: (val) {
-                  setState(() {
-                    descriptionEn = val;
-                  });
-                },
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              SimpleInputField(
-                title: "description(AR)".tr,
-                hint: "writeHere".tr,
-                initialValue: descriptionAr,
-                validator:
-                    isValidate && descriptionAr.isEmpty ? "required".tr : "",
-                onTextChange: (val) {
-                  setState(() {
-                    descriptionAr = val;
-                  });
-                },
-              ),
+              // const SizedBox(
+              //   height: 10,
+              // ),
+              // SimpleInputField(
+              //   title: "description(EN)".tr,
+              //   hint: "writeHere".tr,
+              //   initialValue: descriptionEn,
+              //   validator:
+              //       isValidate && descriptionEn.isEmpty ? "required".tr : "",
+              //   onTextChange: (val) {
+              //     setState(() {
+              //       descriptionEn = val;
+              //     });
+              //   },
+              // ),
+              // const SizedBox(
+              //   height: 10,
+              // ),
+              // SimpleInputField(
+              //   title: "description(AR)".tr,
+              //   hint: "writeHere".tr,
+              //   initialValue: descriptionAr,
+              //   validator:
+              //       isValidate && descriptionAr.isEmpty ? "required".tr : "",
+              //   onTextChange: (val) {
+              //     setState(() {
+              //       descriptionAr = val;
+              //     });
+              //   },
+              // ),
               const SizedBox(
                 height: 10,
               ),
@@ -231,8 +254,9 @@ class _AddGymState extends State<AddGym> {
               customImagePicker(
                 hint: '',
                 width: width,
-                validator:
-                    isValidate && image1 == null ? "imageIsRequired".tr : "",
+                validator: isValidate && id == 0 && image1 == null
+                    ? "imageIsRequired".tr
+                    : "",
                 onTap: () async {
                   // AlertText(context, 'txt').show();
                   var tempImage = (await ImagePicker().pickImage(
@@ -270,7 +294,7 @@ class _AddGymState extends State<AddGym> {
                   width: width * 0.9,
                   height: height * 0.06,
                   child: SimpleButton(
-                    title: "Create",
+                    title: id > 0 ? "Update" : "Create",
                     onPress: () async {
                       setState(() {
                         isValidate = true;
@@ -285,8 +309,9 @@ class _AddGymState extends State<AddGym> {
                       if (!checkValidation()) {
                         return;
                       }
-                      var res = await Get.find<GymController>().addGym(
+                      var res = await Get.find<ShopsController>().addUpdateShop(
                         nameEn: nameEn,
+                        id: id,
                         nameAr: nameAr,
                         contact: contact,
                         latitude: latitude,
@@ -294,13 +319,19 @@ class _AddGymState extends State<AddGym> {
                         city: city,
                         image: image1,
                       );
+                      // inspect(res);
+                      // return;
                       if (res != null) {
-                        ToastMessages.showSuccess(
-                            "Shop has been added successfully");
+                        ToastMessages.showSuccess(id > 0
+                            ? "Shop has been updated successfully"
+                            : "Shop has been added successfully");
                         Get.back();
-                        controller.fetchGyms(type: "all");
-                        controller.fetchGyms(type: "active");
-                        controller.fetchGyms(type: "deactive");
+                        if (id > 0) {
+                          Get.back();
+                        }
+                        controller.fetchShops(type: "all");
+                        controller.fetchShops(type: "active");
+                        controller.fetchShops(type: "deactive");
                       }
                     },
                   ),

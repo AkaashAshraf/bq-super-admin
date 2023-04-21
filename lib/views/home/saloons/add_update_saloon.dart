@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:bq_admin/components/common/app_bar.dart';
@@ -6,58 +7,79 @@ import 'package:bq_admin/components/common/loading_indicator.dart';
 import 'package:bq_admin/components/common/simple_button.dart';
 import 'package:bq_admin/components/common/simple_text_input.dart';
 import 'package:bq_admin/components/common/single_selection_drop_down.dart';
+// import 'package:bq_admin/components/common/single_selection_drop_down.dart';
 import 'package:bq_admin/components/common/toasts.dart';
 import 'package:bq_admin/controllers/constants_controller.dart';
 import 'package:bq_admin/controllers/helper_controller.dart';
-import 'package:bq_admin/controllers/shops_controller.dart';
+import 'package:bq_admin/controllers/saloons_controller.dart';
+import 'package:bq_admin/models/simple/saloon.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AddShop extends StatefulWidget {
-  const AddShop({super.key});
-
+class AddUpdateSaloon extends StatefulWidget {
+  const AddUpdateSaloon({super.key, this.item});
+  final Saloon? item;
   @override
-  State<AddShop> createState() => _AddShopState();
+  State<AddUpdateSaloon> createState() => _AddUpdateSaloonState();
 }
 
-class _AddShopState extends State<AddShop> {
+class _AddUpdateSaloonState extends State<AddUpdateSaloon> {
   HelperController helperController = Get.put(HelperController());
   ConstantsController constantsController = Get.put(ConstantsController());
 
   var isValidate = false;
+  int id = 0;
+
   String imageSelectionType = "gallery".tr;
   XFile? image1;
-
+  int city = 0;
   String nameEn = "";
   String nameAr = "";
   String longitude = "";
   String latitude = "";
   String contact = "";
-  int city = 0;
+
   String descriptionEn = "";
   String descriptionAr = "";
 
-  String notifyingStock = "";
   bool checkValidation() {
     if (nameEn.isEmpty ||
         nameAr.isEmpty ||
         latitude.isEmpty ||
         longitude.isEmpty ||
-        city == 0 ||
+        contact.isEmpty ||
         contact.length < 8 ||
         descriptionEn.isEmpty ||
+        city == 0 ||
         descriptionAr.isEmpty) {
       ToastMessages.showError("Some data is missing");
 
       return false;
     }
+    if (id == 0 && image1 == null) {
+      ToastMessages.showError("Some data is missing");
 
+      return false;
+    }
     return true;
   }
 
   @override
   void initState() {
+    if (widget.item?.id != 0) {
+      setState(() {
+        id = widget.item?.id ?? 0;
+        nameAr = widget.item?.nameAr ?? "";
+        nameEn = widget.item?.nameEn ?? "";
+        descriptionAr = widget.item?.descriptionAr ?? "";
+        descriptionEn = widget.item?.descriptionEn ?? "";
+        contact = widget.item?.contact ?? "";
+        city = widget.item?.city?.id ?? 0;
+        latitude = widget.item?.latitude ?? "";
+        longitude = widget.item?.longitude ?? "";
+      });
+    }
     super.initState();
   }
 
@@ -67,10 +89,10 @@ class _AddShopState extends State<AddShop> {
     final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: appBar(title: "Add Shop"),
+      appBar: appBar(title: id > 0 ? "Update Saloons" : "Add Saloon"),
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
-        child: GetX<ShopsController>(builder: (controller) {
+        child: GetX<SaloonsController>(builder: (controller) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -120,8 +142,8 @@ class _AddShopState extends State<AddShop> {
                   SizedBox(
                     width: width * 0.49,
                     child: SimpleInputField(
-                      keyBoardType: TextInputType.number,
                       title: "Latitude",
+                      keyBoardType: TextInputType.number,
                       hint: "writeHere".tr,
                       initialValue: latitude,
                       validator:
@@ -137,8 +159,8 @@ class _AddShopState extends State<AddShop> {
                     child: SimpleInputField(
                       title: "Longitude",
                       hint: "writeHere".tr,
-                      initialValue: longitude,
                       keyBoardType: TextInputType.number,
+                      initialValue: longitude,
                       validator:
                           isValidate && longitude.isEmpty ? "required".tr : "",
                       onTextChange: (val) {
@@ -159,7 +181,7 @@ class _AddShopState extends State<AddShop> {
                   SizedBox(
                     width: width * 0.95,
                     child: SingleSelectionSimpleDropDown(
-                      title:"City",
+                      title: "City".tr,
                       selected: city,
                       items: constantsController.cities
                           .map((element) => DropDown(
@@ -211,8 +233,8 @@ class _AddShopState extends State<AddShop> {
               ),
               SimpleInputField(
                 title: "Contact",
-                keyBoardType: TextInputType.number,
                 hint: "writeHere".tr,
+                keyBoardType: TextInputType.number,
                 initialValue: contact,
                 validator: isValidate && contact.isEmpty
                     ? "required".tr
@@ -231,8 +253,9 @@ class _AddShopState extends State<AddShop> {
               customImagePicker(
                 hint: '',
                 width: width,
-                validator:
-                    isValidate && image1 == null ? "imageIsRequired".tr : "",
+                validator: isValidate && image1 == null && id == 0
+                    ? "imageIsRequired".tr
+                    : "",
                 onTap: () async {
                   // AlertText(context, 'txt').show();
                   var tempImage = (await ImagePicker().pickImage(
@@ -270,7 +293,7 @@ class _AddShopState extends State<AddShop> {
                   width: width * 0.9,
                   height: height * 0.06,
                   child: SimpleButton(
-                    title: "Create",
+                    title: id > 0 ? "Update" : "Create",
                     onPress: () async {
                       setState(() {
                         isValidate = true;
@@ -285,22 +308,32 @@ class _AddShopState extends State<AddShop> {
                       if (!checkValidation()) {
                         return;
                       }
-                      var res = await Get.find<ShopsController>().addShop(
+                      var res =
+                          await Get.find<SaloonsController>().addUpdateSaloon(
                         nameEn: nameEn,
+                        id: id,
                         nameAr: nameAr,
                         contact: contact,
                         latitude: latitude,
                         longitude: longitude,
                         city: city,
+                        descriptionEn: descriptionEn,
+                        descriptionAr: descriptionAr,
                         image: image1,
                       );
+                      // inspect({res});
+                      // return;
                       if (res != null) {
-                        ToastMessages.showSuccess(
-                            "Shop has been added successfully");
+                        ToastMessages.showSuccess(id > 0
+                            ? "Saloon has been updated successfully"
+                            : "Saloon has been added successfully");
                         Get.back();
-                        controller.fetchShops(type: "all");
-                        controller.fetchShops(type: "active");
-                        controller.fetchShops(type: "deactive");
+                        if (id > 0) {
+                          Get.back();
+                        }
+                        controller.fetchSaloons(type: "all");
+                        controller.fetchSaloons(type: "active");
+                        controller.fetchSaloons(type: "deactive");
                       }
                     },
                   ),

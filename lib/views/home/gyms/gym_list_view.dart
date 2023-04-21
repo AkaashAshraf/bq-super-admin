@@ -7,6 +7,7 @@ import 'package:bq_admin/views/home/gyms/gym_details_view.dart';
 import 'package:bq_admin/views/home/shops/shop_item.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class GymListView extends StatefulWidget {
   const GymListView({Key? key, required this.type}) : super(key: key);
@@ -20,6 +21,10 @@ class _GymListView extends State<GymListView> {
   void initState() {
     super.initState();
   }
+
+  final RefreshController refreshController =
+      RefreshController(initialRefresh: true);
+  final GymController controller = Get.find<GymController>();
 
   Shop getListIndex(GymController controller, int index) {
     Shop saloon = Shop();
@@ -59,32 +64,39 @@ class _GymListView extends State<GymListView> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(child: GetX<GymController>(builder: (controller) {
-      return SizedBox(
-        height: screenHeight(context),
-        width: screenWidth(context),
-        child: (getListLength(controller) == 0 && controller.loading.value)
-            ? const Center(child: BQLoaing())
-            : getListLength(controller) == 0 && !controller.loading.value
-                ? const NoDataWidget(text: "No Gym Available")
-                : ListView.builder(
-                    itemCount: getListLength(controller),
-                    itemBuilder: (BuildContext context, int index) {
-                      return Padding(
-                          padding: const EdgeInsets.only(
-                              top: 2.0, left: 5, right: 5),
-                          child: SizedBox(
-                            child: shopItem(
-                              100,
-                              context,
-                              item: getListIndex(controller, index),
-                              onPress: (item) {
-                                Get.to(GymDetailView(item: item));
-                              },
-                            ),
-                          ));
-                    }),
-      );
-    }));
+    return GetX<GymController>(builder: (controller) {
+      return (getListLength(controller) == 0 && controller.loading.value)
+          ? const Center(child: BQLoaing())
+          : getListLength(controller) == 0 && !controller.loading.value
+              ? const NoDataWidget(text: "No Gym Available")
+              : SmartRefresher(
+                  controller: refreshController,
+                  enablePullDown: true,
+                  enablePullUp: false,
+                  onRefresh: () async {
+                    await controller.fetchGyms(type: widget.type);
+
+                    refreshController.refreshCompleted();
+                  },
+                  header: const WaterDropHeader(),
+                  child: ListView.builder(
+                      itemCount: getListLength(controller),
+                      itemBuilder: (BuildContext context, int index) {
+                        return Padding(
+                            padding: const EdgeInsets.only(
+                                top: 2.0, left: 5, right: 5),
+                            child: SizedBox(
+                              child: shopItem(
+                                100,
+                                context,
+                                item: getListIndex(controller, index),
+                                onPress: (item) {
+                                  Get.to(GymDetailView(item: item));
+                                },
+                              ),
+                            ));
+                      }),
+                );
+    });
   }
 }

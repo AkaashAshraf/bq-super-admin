@@ -1,7 +1,8 @@
 import 'package:bq_admin/components/common/app_bar.dart';
 import 'package:bq_admin/config/colors.dart';
 import 'package:bq_admin/config/text_sizes.dart';
-import 'package:bq_admin/views/home/shops/add_shop.dart';
+import 'package:bq_admin/models/simple/shop.dart';
+import 'package:bq_admin/views/home/shops/add_update_shop.dart';
 import 'package:bq_admin/views/home/shops/shop_list_view.dart';
 import 'package:buttons_tabbar/buttons_tabbar.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +23,9 @@ class _ShopTabs extends State<ShopTabs> {
             title: "Beauty Shops",
             rightIcon: GestureDetector(
               onTap: () {
-                Get.to(const AddShop());
+                Get.to(AddUpdateShop(
+                  shop: Shop(),
+                ));
               },
               child: const IconButton(
                 icon: Icon(

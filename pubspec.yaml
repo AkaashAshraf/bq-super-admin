@@ -54,7 +54,9 @@ dependencies:
   animated_text_kit: ^4.2.2
   carousel_slider: ^4.2.1
   image_picker: ^0.8.6+4
-  dropdown_search: ^5.0.5
+  dropdown_search: ^4.0.0
+  pull_to_refresh: ^2.0.0
+  # dropdown_search: ^2.0.1
 
 dev_dependencies:
   flutter_test:

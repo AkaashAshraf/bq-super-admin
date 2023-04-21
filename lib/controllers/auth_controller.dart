@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bq_admin/components/common/toasts.dart';
 import 'package:bq_admin/config/storages.dart';
 import 'package:bq_admin/config/sub_urls.dart';
@@ -81,6 +83,39 @@ class AuthController extends GetxController {
     } catch (e) {
       print(e.toString());
       ToastMessages.showError("Invalid password");
+    } finally {
+      loading(false);
+    }
+  }
+
+  updateProfile({
+    required String name,
+    required String password,
+  }) async {
+    try {
+      loading(true);
+
+      var response =
+          await post(updateProfileUrl, {"name": name, "password": password});
+      // inspect(response);
+      if (response.statusCode == 200) {
+        var jsonData = loginFromJson(response.body);
+        MyApp().storage.write(tokenPath, jsonData.token);
+        MyApp().storage.write(userIDPath, jsonData.user?.id.toString());
+        MyApp().storage.write(userNamePath, jsonData.user?.name);
+        MyApp().storage.write(userDataPath, loginToJson(jsonData));
+        ToastMessages.showSuccess("LoggedInSuccessfully".tr);
+        getUserInfoFromCache();
+
+        Get.offAll(const DashboardView());
+        return true;
+        // Get.toEnd(() => const DashboardView(title: ""));
+      } else {
+        ToastMessages.showError("Something went wrong");
+        return false;
+      }
+    } catch (err) {
+      return false;
     } finally {
       loading(false);
     }

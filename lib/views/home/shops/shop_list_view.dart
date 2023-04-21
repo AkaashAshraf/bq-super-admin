@@ -7,6 +7,7 @@ import 'package:bq_admin/views/home/shops/shop_details_view.dart';
 import 'package:bq_admin/views/home/shops/shop_item.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ShopListView extends StatefulWidget {
   const ShopListView({Key? key, required this.type}) : super(key: key);
@@ -58,6 +59,9 @@ class _ShopListView extends State<ShopListView> {
     return length;
   }
 
+  final RefreshController refreshController =
+      RefreshController(initialRefresh: true);
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(child: GetX<ShopsController>(builder: (controller) {
@@ -66,23 +70,34 @@ class _ShopListView extends State<ShopListView> {
             ? const Center(child: BQLoaing())
             : getListLength(controller) == 0 && !controller.loading.value
                 ? const NoDataWidget(text: "No Shop Available")
-                : ListView.builder(
-                    itemCount: getListLength(controller),
-                    itemBuilder: (BuildContext context, int index) {
-                      return Padding(
-                          padding: const EdgeInsets.only(
-                              top: 2.0, left: 5, right: 5),
-                          child: SizedBox(
-                            child: shopItem(
-                              100,
-                              context,
-                              item: getListIndex(controller, index),
-                              onPress: (item) {
-                                Get.to(ShopDetailView(item: item));
-                              },
-                            ),
-                          ));
-                    }),
+                : SmartRefresher(
+                    controller: refreshController,
+                    enablePullDown: true,
+                    enablePullUp: false,
+                    onRefresh: () async {
+                      await controller.fetchShops(type: widget.type);
+
+                      refreshController.refreshCompleted();
+                    },
+                    header: const WaterDropHeader(),
+                    child: ListView.builder(
+                        itemCount: getListLength(controller),
+                        itemBuilder: (BuildContext context, int index) {
+                          return Padding(
+                              padding: const EdgeInsets.only(
+                                  top: 2.0, left: 5, right: 5),
+                              child: SizedBox(
+                                child: shopItem(
+                                  100,
+                                  context,
+                                  item: getListIndex(controller, index),
+                                  onPress: (item) {
+                                    Get.to(ShopDetailView(item: item));
+                                  },
+                                ),
+                              ));
+                        }),
+                  ),
       );
     }));
   }

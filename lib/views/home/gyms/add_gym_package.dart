@@ -6,57 +6,53 @@ import 'package:bq_admin/components/common/loading_indicator.dart';
 import 'package:bq_admin/components/common/simple_button.dart';
 import 'package:bq_admin/components/common/simple_text_input.dart';
 import 'package:bq_admin/components/common/single_selection_drop_down.dart';
-// import 'package:bq_admin/components/common/single_selection_drop_down.dart';
 import 'package:bq_admin/components/common/toasts.dart';
 import 'package:bq_admin/controllers/constants_controller.dart';
+import 'package:bq_admin/controllers/gym_controller.dart';
 import 'package:bq_admin/controllers/helper_controller.dart';
-import 'package:bq_admin/controllers/saloons_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AddSaloon extends StatefulWidget {
-  const AddSaloon({super.key});
-
+class AddGymPackage extends StatefulWidget {
+  const AddGymPackage({super.key, required this.shopId});
+  final int shopId;
   @override
-  State<AddSaloon> createState() => _AddSaloonState();
+  State<AddGymPackage> createState() => _AddGymPackageState();
 }
 
-class _AddSaloonState extends State<AddSaloon> {
+class _AddGymPackageState extends State<AddGymPackage> {
   HelperController helperController = Get.put(HelperController());
   ConstantsController constantsController = Get.put(ConstantsController());
 
   var isValidate = false;
-  int productId = 0;
   String imageSelectionType = "gallery".tr;
   XFile? image1;
-  int city = 0;
   String nameEn = "";
   String nameAr = "";
-  String longitude = "";
-  String latitude = "";
-  String contact = "";
-
+  String price = "";
+  String duration = "";
   String descriptionEn = "";
   String descriptionAr = "";
 
   String notifyingStock = "";
   bool checkValidation() {
     if (nameEn.isEmpty ||
-        nameAr.isEmpty ||
-        latitude.isEmpty ||
-        longitude.isEmpty ||
-        contact.isEmpty ||
-        contact.length < 8 ||
-        descriptionEn.isEmpty ||
-        city == 0 ||
-        descriptionAr.isEmpty) {
+            nameAr.isEmpty ||
+            duration.isEmpty ||
+            descriptionAr.isEmpty ||
+            descriptionEn.isEmpty ||
+            price.isEmpty
+        // ||
+        // descriptionEn.isEmpty ||
+        // descriptionAr.isEmpty
+        ) {
       ToastMessages.showError("Some data is missing");
 
       return false;
     }
-    if (productId == 0 && image1 == null) {
-      ToastMessages.showError("Some data is missing");
+    if (image1 == null) {
+      ToastMessages.showError("image is missing");
 
       return false;
     }
@@ -74,10 +70,10 @@ class _AddSaloonState extends State<AddSaloon> {
     final width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: appBar(title: "Add Saloon"),
+      appBar: appBar(title: "Add Gym Package"),
       resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
-        child: GetX<SaloonsController>(builder: (controller) {
+        child: GetX<GymController>(builder: (controller) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -127,56 +123,30 @@ class _AddSaloonState extends State<AddSaloon> {
                   SizedBox(
                     width: width * 0.49,
                     child: SimpleInputField(
-                      title: "Latitude",
                       keyBoardType: TextInputType.number,
+                      title: "Duration",
                       hint: "writeHere".tr,
-                      initialValue: latitude,
+                      initialValue: duration,
                       validator:
-                          isValidate && latitude.isEmpty ? "required".tr : "",
+                          isValidate && duration.isEmpty ? "required".tr : "",
                       onTextChange: (val) {
                         setState(() {
-                          latitude = val;
+                          duration = val;
                         });
                       },
                     ),
                   ),
                   Expanded(
                     child: SimpleInputField(
-                      title: "Longitude",
+                      title: "Price",
                       hint: "writeHere".tr,
+                      initialValue: price,
                       keyBoardType: TextInputType.number,
-                      initialValue: longitude,
                       validator:
-                          isValidate && longitude.isEmpty ? "required".tr : "",
+                          isValidate && price.isEmpty ? "required".tr : "",
                       onTextChange: (val) {
                         setState(() {
-                          longitude = val;
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    width: width * 0.95,
-                    child: SingleSelectionSimpleDropDown(
-                      title: "City".tr,
-                      selected: city,
-                      items: constantsController.cities
-                          .map((element) => DropDown(
-                              title: element.nameEn ?? "",
-                              value: element.id ?? 0))
-                          .toList(),
-                      validator: isValidate && city == 0 ? "required".tr : "",
-                      onChange: (DropDown val) {
-                        setState(() {
-                          city = val.value;
+                          price = val;
                         });
                       },
                     ),
@@ -216,31 +186,11 @@ class _AddSaloonState extends State<AddSaloon> {
               const SizedBox(
                 height: 10,
               ),
-              SimpleInputField(
-                title: "Contact",
-                hint: "writeHere".tr,
-                keyBoardType: TextInputType.number,
-                initialValue: contact,
-                validator: isValidate && contact.isEmpty
-                    ? "required".tr
-                    : isValidate && contact.length < 8
-                        ? "invalid contact"
-                        : "",
-                onTextChange: (val) {
-                  setState(() {
-                    contact = val;
-                  });
-                },
-              ),
-              const SizedBox(
-                height: 10,
-              ),
               customImagePicker(
                 hint: '',
                 width: width,
-                validator: isValidate && image1 == null && productId == 0
-                    ? "imageIsRequired".tr
-                    : "",
+                validator:
+                    isValidate && image1 == null ? "imageIsRequired".tr : "",
                 onTap: () async {
                   // AlertText(context, 'txt').show();
                   var tempImage = (await ImagePicker().pickImage(
@@ -293,24 +243,26 @@ class _AddSaloonState extends State<AddSaloon> {
                       if (!checkValidation()) {
                         return;
                       }
-                      var res = await Get.find<SaloonsController>().addSaloon(
+                      var res = await Get.find<GymController>().addGymPackage(
                         nameEn: nameEn,
+                        shopId: widget.shopId,
+                        duration: duration,
                         nameAr: nameAr,
-                        contact: contact,
-                        latitude: latitude,
-                        longitude: longitude,
-                        city: city,
-                        descriptionEn: descriptionEn,
                         descriptionAr: descriptionAr,
+                        descriptionEn: descriptionEn,
+                        price: price,
                         image: image1,
                       );
                       if (res != null) {
                         ToastMessages.showSuccess(
-                            "Saloon has been added successfully");
+                            "Package has been added successfully");
                         Get.back();
-                        controller.fetchSaloons(type: "all");
-                        controller.fetchSaloons(type: "active");
-                        controller.fetchSaloons(type: "deactive");
+                        Get.back();
+
+                        controller.fetchGyms(type: "all");
+                        controller.fetchGyms(type: "active");
+                        controller.fetchGyms(type: "deactive");
+                        controller.update();
                       }
                     },
                   ),

@@ -10,6 +10,7 @@ import 'package:bq_admin/config/constants.dart';
 import 'package:bq_admin/controllers/helper_controller.dart';
 import 'package:bq_admin/controllers/shops_controller.dart';
 import 'package:bq_admin/models/simple/shop.dart';
+import 'package:bq_admin/views/home/shops/add_update_shop.dart';
 import 'package:bq_admin/views/home/shops/shop_product_item.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -240,7 +241,7 @@ class _ShopDetailView extends State<ShopDetailView> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         SizedBox(
-                          width: width * 0.43,
+                          width: width * 0.28,
                           child: iconButton(
                               onClick: () async {
                                 genericPopup(context,
@@ -295,9 +296,22 @@ class _ShopDetailView extends State<ShopDetailView> {
                               ),
                               text: "Contact".tr),
                         ),
+                        SizedBox(
+                          width: width * 0.28,
+                          child: iconButton(
+                              onClick: () async {
+                                Get.to(AddUpdateShop(shop: widget.item));
+                              },
+                              icon: const Icon(
+                                Icons.edit,
+                                size: 20,
+                                color: Colors.white,
+                              ),
+                              text: "Update".tr),
+                        ),
                         if (controller.loading.value) Container(),
                         SizedBox(
-                          width: width * 0.43,
+                          width: width * 0.3,
                           child: iconButton(
                               onClick: () async {
                                 genericPopup(context,

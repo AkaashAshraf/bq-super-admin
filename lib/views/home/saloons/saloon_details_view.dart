@@ -10,6 +10,7 @@ import 'package:bq_admin/config/constants.dart';
 import 'package:bq_admin/controllers/helper_controller.dart';
 import 'package:bq_admin/controllers/saloons_controller.dart';
 import 'package:bq_admin/models/simple/saloon.dart';
+import 'package:bq_admin/views/home/saloons/add_update_saloon.dart';
 import 'package:bq_admin/views/home/saloons/saloon_service_item.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -260,7 +261,7 @@ class _SaloonDetailView extends State<SaloonDetailView> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         SizedBox(
-                          width: width * 0.43,
+                          width: width * 0.28,
                           child: iconButton(
                               onClick: () async {
                                 genericPopup(context,
@@ -315,9 +316,22 @@ class _SaloonDetailView extends State<SaloonDetailView> {
                               ),
                               text: "Contact".tr),
                         ),
+                        SizedBox(
+                          width: width * 0.28,
+                          child: iconButton(
+                              onClick: () async {
+                                Get.to(AddUpdateSaloon(item: widget.item));
+                              },
+                              icon: const Icon(
+                                Icons.edit,
+                                size: 20,
+                                color: Colors.white,
+                              ),
+                              text: "Update".tr),
+                        ),
                         if (controller.loading.value) Container(),
                         SizedBox(
-                          width: width * 0.43,
+                          width: width * 0.3,
                           child: iconButton(
                               onClick: () async {
                                 genericPopup(context,

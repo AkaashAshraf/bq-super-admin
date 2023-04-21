@@ -5,6 +5,7 @@ import 'package:bq_admin/views/home/genralServices/add_general_service.dart';
 import 'package:bq_admin/views/home/genralServices/general_service_item.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class GeneralServiceList extends StatefulWidget {
   const GeneralServiceList({Key? key}) : super(key: key);
@@ -18,6 +19,9 @@ class _GeneralServiceList extends State<GeneralServiceList> {
     Get.find<GeneralServicesController>().fetchGeneralServices();
     super.initState();
   }
+
+  final RefreshController refreshController =
+      RefreshController(initialRefresh: true);
 
   @override
   Widget build(BuildContext context) {
@@ -37,9 +41,17 @@ class _GeneralServiceList extends State<GeneralServiceList> {
               onPressed: null,
             ),
           )),
-      body: SafeArea(
-          child: GetX<GeneralServicesController>(builder: (controller) {
-        return SizedBox(
+      body: GetX<GeneralServicesController>(builder: (controller) {
+        return SmartRefresher(
+          controller: refreshController,
+          enablePullDown: true,
+          enablePullUp: false,
+          onRefresh: () async {
+            await controller.fetchGeneralServices();
+
+            refreshController.refreshCompleted();
+          },
+          header: const WaterDropHeader(),
           child: ListView.builder(
               itemCount: controller.genralServicesList.length,
               itemBuilder: (BuildContext context, int index) {
@@ -58,7 +70,7 @@ class _GeneralServiceList extends State<GeneralServiceList> {
                     ));
               }),
         );
-      })),
+      }),
     );
   }
 }

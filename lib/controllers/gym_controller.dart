@@ -86,8 +86,9 @@ class GymController extends GetxController {
     }
   }
 
-  addGym({
+  addUpdateGym({
     required String nameEn,
+    required int id,
     required String nameAr,
     required String latitude,
     required String longitude,
@@ -98,9 +99,11 @@ class GymController extends GetxController {
     try {
       loading(true);
 
-      var request =
-          http.MultipartRequest('POST', Uri.parse(baseUrl + addShopUrl));
+      var request = http.MultipartRequest(
+          'POST', Uri.parse(baseUrl + (id > 0 ? updateShopUrl : addShopUrl)));
       request.fields['name_en'] = nameEn;
+      request.fields['id'] = id.toString();
+
       request.fields['type'] = "gym";
 
       request.fields['name_ar'] = nameAr;
@@ -116,7 +119,65 @@ class GymController extends GetxController {
         request.files.add(multipartFile);
       }
       var res = await multirequestPost(request);
-      return res;
+      var resData = await res.stream.toBytes();
+      var fRes = String.fromCharCodes(resData);
+      return fRes;
+    } catch (err) {
+      print(err.toString());
+
+      return null;
+    } finally {
+      loading(false);
+    }
+  }
+
+  Future<bool> deletePackage(String packageid) async {
+    try {
+      var res = await post(deleteGymPackageUrl, {"package_id": packageid});
+      if (res != null) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      return false;
+    } finally {}
+  }
+
+  addGymPackage({
+    required String nameEn,
+    required int shopId,
+    required String nameAr,
+    required String descriptionEn,
+    required String descriptionAr,
+    required String duration,
+    required String price,
+    required XFile? image,
+  }) async {
+    try {
+      loading(true);
+
+      var request =
+          http.MultipartRequest('POST', Uri.parse(baseUrl + addGymPackageUrl));
+      request.fields['name_en'] = nameEn;
+      request.fields['shop_id'] = shopId.toString();
+
+      request.fields['name_ar'] = nameAr;
+      request.fields['description_en'] = descriptionEn;
+      request.fields['description_ar'] = descriptionAr;
+
+      request.fields['duration'] = duration;
+      request.fields['price'] = price;
+
+      if (image != null) {
+        http.MultipartFile multipartFile =
+            await http.MultipartFile.fromPath('image', image.path);
+        request.files.add(multipartFile);
+      }
+      var res = await multirequestPost(request);
+      var resData = await res.stream.toBytes();
+      var fRes = String.fromCharCodes(resData);
+      return fRes;
     } catch (err) {
       print(err.toString());
 

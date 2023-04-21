@@ -6,6 +6,7 @@ import 'package:bq_admin/config/storages.dart';
 import 'package:bq_admin/config/text_sizes.dart';
 import 'package:bq_admin/controllers/auth_controller.dart';
 import 'package:bq_admin/main.dart';
+import 'package:bq_admin/views/profile/my_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get/get.dart';
@@ -67,14 +68,14 @@ class _MenuDrawerState extends State<MenuDrawer> {
         //     ), onPress: () {
         //   // Get.to(const Profile());
         // }, title: "Profile".tr),
-        // drawerItem(context,
-        //     icon: const Icon(
-        //       Icons.book_outlined,
-        //       size: 25,
-        //       color: textInputIconColor,
-        //     ), onPress: () {
-        //   // Get.to(const MyAppointmentsList());
-        // }, title: "MyAppointments".tr),
+        drawerItem(context,
+            icon: const Icon(
+              Icons.verified_user,
+              size: 25,
+              color: textInputIconColor,
+            ), onPress: () {
+          Get.to(const Profile());
+        }, title: "Profile".tr),
         // drawerItem(context,
         //     icon: const Icon(
         //       Icons.notifications,

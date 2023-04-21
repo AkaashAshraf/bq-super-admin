@@ -86,8 +86,9 @@ class ShopsController extends GetxController {
     }
   }
 
-  addShop({
+  addUpdateShop({
     required String nameEn,
+    required int id,
     required String nameAr,
     required String latitude,
     required String longitude,
@@ -98,9 +99,11 @@ class ShopsController extends GetxController {
     try {
       loading(true);
 
-      var request =
-          http.MultipartRequest('POST', Uri.parse(baseUrl + addShopUrl));
+      var request = http.MultipartRequest(
+          'POST', Uri.parse(baseUrl + (id > 0 ? updateShopUrl : addShopUrl)));
       request.fields['name_en'] = nameEn;
+      request.fields['id'] = id.toString();
+
       request.fields['type'] = "shop";
 
       request.fields['name_ar'] = nameAr;
@@ -116,7 +119,9 @@ class ShopsController extends GetxController {
         request.files.add(multipartFile);
       }
       var res = await multirequestPost(request);
-      return res;
+      var resData = await res.stream.toBytes();
+      var fRes = String.fromCharCodes(resData);
+      return fRes;
     } catch (err) {
       print(err.toString());
 

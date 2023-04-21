@@ -11,6 +11,8 @@ import 'package:bq_admin/controllers/gym_controller.dart';
 import 'package:bq_admin/controllers/helper_controller.dart';
 import 'package:bq_admin/controllers/shops_controller.dart';
 import 'package:bq_admin/models/simple/shop.dart';
+import 'package:bq_admin/views/home/gyms/add_gym_package.dart';
+import 'package:bq_admin/views/home/gyms/add_update_gym.dart';
 import 'package:bq_admin/views/home/gyms/gym_package_item.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -47,9 +49,21 @@ class _GymDetailView extends State<GymDetailView> {
           title: Get.locale.toString() == "en"
               ? widget.item.nameEn ?? ""
               : widget.item.nameAr ?? "",
+          rightIcon: GestureDetector(
+            onTap: () {
+              Get.to(AddGymPackage(shopId: widget.item.id ?? 0));
+            },
+            child: const IconButton(
+              icon: Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+              onPressed: null,
+            ),
+          ),
           showCart: false),
       body: SafeArea(child: SingleChildScrollView(
-          child: GetX<ShopsController>(builder: (controller) {
+          child: GetX<GymController>(builder: (controller) {
         return Column(
           children: [
             Container(
@@ -241,7 +255,7 @@ class _GymDetailView extends State<GymDetailView> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         SizedBox(
-                          width: width * 0.43,
+                          width: width * 0.28,
                           child: iconButton(
                               onClick: () async {
                                 genericPopup(context,
@@ -296,9 +310,22 @@ class _GymDetailView extends State<GymDetailView> {
                               ),
                               text: "Contact".tr),
                         ),
+                        SizedBox(
+                          width: width * 0.28,
+                          child: iconButton(
+                              onClick: () async {
+                                Get.to(AddUpdateGym(gym: widget.item));
+                              },
+                              icon: const Icon(
+                                Icons.edit,
+                                size: 20,
+                                color: Colors.white,
+                              ),
+                              text: "Update".tr),
+                        ),
                         if (controller.loading.value) Container(),
                         SizedBox(
-                          width: width * 0.43,
+                          width: width * 0.3,
                           child: iconButton(
                               onClick: () async {
                                 genericPopup(context,
@@ -396,7 +423,9 @@ class _GymDetailView extends State<GymDetailView> {
               gymPackageItem(
                 cardHeight,
                 context,
+                controller: controller,
                 shop: widget.item,
+                // controller: controller,
                 package: widget.item.gymPackages![i],
               )
           ],
