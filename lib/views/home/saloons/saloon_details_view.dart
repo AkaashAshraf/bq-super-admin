@@ -256,12 +256,12 @@ class _SaloonDetailView extends State<SaloonDetailView> {
                     ),
                   ),
                   SizedBox(
-                    width: width * 0.9,
+                    width: width * 0.96,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         SizedBox(
-                          width: width * 0.28,
+                          width: width * 0.31,
                           child: iconButton(
                               onClick: () async {
                                 genericPopup(context,
@@ -317,7 +317,7 @@ class _SaloonDetailView extends State<SaloonDetailView> {
                               text: "Contact".tr),
                         ),
                         SizedBox(
-                          width: width * 0.28,
+                          width: width * 0.31,
                           child: iconButton(
                               onClick: () async {
                                 Get.to(AddUpdateSaloon(item: widget.item));
@@ -331,7 +331,7 @@ class _SaloonDetailView extends State<SaloonDetailView> {
                         ),
                         if (controller.loading.value) Container(),
                         SizedBox(
-                          width: width * 0.3,
+                          width: width * 0.31,
                           child: iconButton(
                               onClick: () async {
                                 genericPopup(context,

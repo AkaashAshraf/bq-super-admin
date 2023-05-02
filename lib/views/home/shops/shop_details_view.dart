@@ -236,12 +236,12 @@ class _ShopDetailView extends State<ShopDetailView> {
                     ),
                   ),
                   SizedBox(
-                    width: width * 0.9,
+                    width: width * 0.96,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         SizedBox(
-                          width: width * 0.28,
+                          width: width * 0.31,
                           child: iconButton(
                               onClick: () async {
                                 genericPopup(context,
@@ -297,7 +297,7 @@ class _ShopDetailView extends State<ShopDetailView> {
                               text: "Contact".tr),
                         ),
                         SizedBox(
-                          width: width * 0.28,
+                          width: width * 0.31,
                           child: iconButton(
                               onClick: () async {
                                 Get.to(AddUpdateShop(shop: widget.item));
@@ -311,7 +311,7 @@ class _ShopDetailView extends State<ShopDetailView> {
                         ),
                         if (controller.loading.value) Container(),
                         SizedBox(
-                          width: width * 0.3,
+                          width: width * 0.31,
                           child: iconButton(
                               onClick: () async {
                                 genericPopup(context,
